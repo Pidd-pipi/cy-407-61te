@@ -3,6 +3,7 @@ import { artifactRepository } from '@/api/storage';
 import type { Artifact, ArtifactDraft } from '@/types';
 import { CraftCategory } from '@/types';
 import { createBlobUrl, createId, deleteBlobFile, saveBlobFile } from '@/utils/storage';
+import { useFeedbackStore } from './feedback';
 
 function craftImage(label: string, background: string, accent: string): string {
   const svg = `
@@ -138,6 +139,8 @@ export const useArtifactStore = defineStore('artifact', {
       await Promise.all([...current.imageFileIds, current.modelFileId].filter(Boolean).map((fileId) => deleteBlobFile(fileId as string)));
       this.artifacts = this.artifacts.filter((artifact) => artifact.id !== id);
       await artifactRepository.remove(id);
+      // 展品从库中移除时，相关讲解反馈一并清理
+      await useFeedbackStore().removeByArtifact(id);
     },
     async attachFiles(artifactId: string, imageFiles: File[], modelFile?: File) {
       const current = this.getById(artifactId);

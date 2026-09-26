@@ -3,6 +3,7 @@
     <div class="artifact-image">
       <img v-if="artifact.images[0]" :src="artifact.images[0]" :alt="artifact.name" />
       <div v-else class="artifact-empty">{{ artifact.name.slice(0, 1) }}</div>
+      <span v-if="pendingCount > 0" class="pending-badge">{{ pendingCount }} 待处理</span>
     </div>
     <div class="artifact-body">
       <div class="artifact-kicker">{{ craftCategoryLabels[artifact.category] }} · {{ artifact.year }}</div>
@@ -31,12 +32,14 @@ withDefaults(
     compact?: boolean;
     selectable?: boolean;
     removable?: boolean;
+    pendingCount?: number;
   }>(),
   {
     active: false,
     compact: false,
     selectable: false,
-    removable: false
+    removable: false,
+    pendingCount: 0
   }
 );
 
@@ -79,10 +82,24 @@ defineEmits<{
 }
 
 .artifact-image {
+  position: relative;
   overflow: hidden;
   aspect-ratio: 1;
   background: #d9c9a9;
   border-radius: 6px;
+}
+
+.pending-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  padding: 2px 8px;
+  color: #fbf5e8;
+  font-size: 11px;
+  font-weight: 700;
+  background: #bb4d3e;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(31, 46, 41, 0.25);
 }
 
 .artifact-image img {

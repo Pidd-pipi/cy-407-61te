@@ -6,6 +6,9 @@
         <p>维护展品资料并上传本地图片或 GLB/GLTF 模型文件，文件会以 Blob 形式保存在 IndexedDB。</p>
       </div>
       <div class="library-actions">
+        <n-tag v-if="feedbackStore.totalPending > 0" type="error" size="medium" round>
+          {{ feedbackStore.totalPending }} 条讲解问题待处理
+        </n-tag>
         <n-radio-group v-model:value="viewMode" size="small">
           <n-radio-button value="grid">网格</n-radio-button>
           <n-radio-button value="list">列表</n-radio-button>
@@ -22,6 +25,7 @@
           :artifact="artifact"
           :active="artifact.id === selectedId"
           :compact="viewMode === 'list'"
+          :pending-count="feedbackStore.pendingByArtifactId(artifact.id).length"
           removable
           @open="selectArtifact"
           @delete="deleteArtifact"
@@ -80,12 +84,14 @@ import { useMessage } from 'naive-ui';
 import ArtifactCard from '@/components/common/ArtifactCard.vue';
 import FileUploader from '@/components/common/FileUploader.vue';
 import { useArtifactStore } from '@/stores/artifact';
+import { useFeedbackStore } from '@/stores/feedback';
 import type { ArtifactDraft } from '@/types';
 import { CraftCategory, craftCategoryLabels } from '@/types';
 
 const router = useRouter();
 const message = useMessage();
 const artifactStore = useArtifactStore();
+const feedbackStore = useFeedbackStore();
 const viewMode = ref<'grid' | 'list'>('grid');
 const selectedId = ref(artifactStore.artifacts[0]?.id ?? '');
 const isCreating = ref(false);

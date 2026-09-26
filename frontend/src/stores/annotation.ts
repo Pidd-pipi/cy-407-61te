@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { annotationRepository } from '@/api/storage';
 import type { Annotation, AnnotationDraft } from '@/types';
 import { createId } from '@/utils/storage';
+import { useFeedbackStore } from './feedback';
 
 const seedAnnotations: Annotation[] = [
   {
@@ -78,6 +79,8 @@ export const useAnnotationStore = defineStore('annotation', {
     async deleteAnnotation(id: string) {
       this.annotations = this.annotations.filter((annotation) => annotation.id !== id);
       await annotationRepository.remove(id);
+      // 讲解本身被删除时，其反馈也随之清理
+      await useFeedbackStore().removeByTarget(id);
     }
   }
 });
