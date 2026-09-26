@@ -35,6 +35,7 @@
             </template>
           </n-alert>
         </section>
+        <PendingFeedbackList :artifact-id="artifact.id" />
       </div>
     </div>
   </section>
@@ -46,6 +47,7 @@ import { computed, reactive, ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
 import { useMessage } from 'naive-ui';
 import InfoPanel from '@/components/common/InfoPanel.vue';
+import PendingFeedbackList from '@/components/feedback/PendingFeedbackList.vue';
 import ModelViewer from '@/components/viewer/ModelViewer.vue';
 import { useAnnotationStore } from '@/stores/annotation';
 import { useArtifactStore } from '@/stores/artifact';

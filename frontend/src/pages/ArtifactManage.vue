@@ -2,7 +2,12 @@
   <section class="artifact-manage">
     <div class="page-head">
       <div>
-        <h1>展品库</h1>
+        <h1>
+          展品库
+          <n-tag v-if="totalPendingCount > 0" class="pending-total" type="error" size="small" :bordered="false">
+            {{ totalPendingCount }} 条问题待处理
+          </n-tag>
+        </h1>
         <p>维护展品资料并上传本地图片或 GLB/GLTF 模型文件，文件会以 Blob 形式保存在 IndexedDB。</p>
       </div>
       <div class="library-actions">
@@ -22,6 +27,7 @@
           :artifact="artifact"
           :active="artifact.id === selectedId"
           :compact="viewMode === 'list'"
+          :pending-count="feedbackStore.pendingIssuesByArtifactId(artifact.id).length"
           removable
           @open="selectArtifact"
           @delete="deleteArtifact"
@@ -80,16 +86,25 @@ import { useMessage } from 'naive-ui';
 import ArtifactCard from '@/components/common/ArtifactCard.vue';
 import FileUploader from '@/components/common/FileUploader.vue';
 import { useArtifactStore } from '@/stores/artifact';
+import { useFeedbackStore } from '@/stores/feedback';
 import type { ArtifactDraft } from '@/types';
 import { CraftCategory, craftCategoryLabels } from '@/types';
 
 const router = useRouter();
 const message = useMessage();
 const artifactStore = useArtifactStore();
+const feedbackStore = useFeedbackStore();
 const viewMode = ref<'grid' | 'list'>('grid');
 const selectedId = ref(artifactStore.artifacts[0]?.id ?? '');
 const isCreating = ref(false);
 const draft = reactive<ArtifactDraft>(artifactStore.createEmptyDraft());
+
+const totalPendingCount = computed(() =>
+  artifactStore.artifacts.reduce(
+    (total, artifact) => total + feedbackStore.pendingIssuesByArtifactId(artifact.id).length,
+    0
+  )
+);
 
 const selectedArtifact = computed(() => artifactStore.getById(selectedId.value));
 const categoryOptions = Object.values(CraftCategory).map((value) => ({
@@ -188,6 +203,11 @@ async function deleteArtifact(id: string) {
 .artifact-manage {
   display: grid;
   gap: 18px;
+}
+
+.pending-total {
+  margin-left: 10px;
+  vertical-align: middle;
 }
 
 .library-actions {

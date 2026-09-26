@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { annotationRepository } from '@/api/storage';
 import type { Annotation, AnnotationDraft } from '@/types';
 import { createId } from '@/utils/storage';
+import { useFeedbackStore } from './feedback';
 
 const seedAnnotations: Annotation[] = [
   {
@@ -78,6 +79,7 @@ export const useAnnotationStore = defineStore('annotation', {
     async deleteAnnotation(id: string) {
       this.annotations = this.annotations.filter((annotation) => annotation.id !== id);
       await annotationRepository.remove(id);
+      await useFeedbackStore().removeByAnnotationId(id);
     }
   }
 });

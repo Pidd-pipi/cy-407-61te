@@ -8,6 +8,7 @@
       <div class="artifact-kicker">{{ craftCategoryLabels[artifact.category] }} · {{ artifact.year }}</div>
       <h3>{{ artifact.name }}</h3>
       <p>{{ artifact.author }} / {{ artifact.material }}</p>
+      <div v-if="pendingCount > 0" class="artifact-pending">{{ pendingCount }} 条讲解问题待处理</div>
     </div>
     <div v-if="selectable || removable" class="artifact-actions" @click.stop>
       <n-button v-if="selectable" size="small" secondary @click="$emit('select', artifact.id)">
@@ -31,12 +32,14 @@ withDefaults(
     compact?: boolean;
     selectable?: boolean;
     removable?: boolean;
+    pendingCount?: number;
   }>(),
   {
     active: false,
     compact: false,
     selectable: false,
-    removable: false
+    removable: false,
+    pendingCount: 0
   }
 );
 
@@ -110,6 +113,17 @@ defineEmits<{
   color: var(--museum-brass);
   font-size: 12px;
   font-weight: 700;
+}
+
+.artifact-pending {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 2px 8px;
+  color: #fbf5e8;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--museum-red);
+  border-radius: 999px;
 }
 
 h3 {

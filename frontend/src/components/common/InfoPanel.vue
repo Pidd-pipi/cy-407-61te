@@ -21,17 +21,14 @@
       </div>
     </dl>
     <section v-if="annotations.length" class="annotation-list">
-      <h3>模型标注</h3>
-      <button
-        v-for="annotation in annotations"
-        :key="annotation.id"
-        type="button"
-        class="annotation-row"
-        @click="$emit('annotation-click', annotation.id)"
-      >
-        <span>{{ annotation.title }}</span>
-        <small>{{ annotation.content }}</small>
-      </button>
+      <h3>模型标注 · 讲解反馈</h3>
+      <div v-for="annotation in annotations" :key="annotation.id" class="annotation-row">
+        <button type="button" class="annotation-main" @click="$emit('annotation-click', annotation.id)">
+          <span>{{ annotation.title }}</span>
+          <small>{{ annotation.content }}</small>
+        </button>
+        <AnnotationFeedback :annotation="annotation" />
+      </div>
     </section>
   </aside>
 </template>
@@ -39,6 +36,7 @@
 <script setup lang="ts">
 import type { Annotation, Artifact } from '@/types';
 import { craftCategoryLabels } from '@/types';
+import AnnotationFeedback from '@/components/feedback/AnnotationFeedback.vue';
 
 withDefaults(
   defineProps<{
@@ -122,8 +120,7 @@ dd {
 
 .annotation-row {
   display: grid;
-  width: 100%;
-  gap: 3px;
+  gap: 6px;
   margin-bottom: 8px;
   padding: 11px 12px;
   text-align: left;
@@ -131,18 +128,29 @@ dd {
   background: #efe5d1;
   border: 1px solid transparent;
   border-radius: 6px;
-  cursor: pointer;
 }
 
 .annotation-row:hover {
   border-color: rgba(157, 123, 54, 0.55);
 }
 
-.annotation-row span {
+.annotation-main {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  padding: 0;
+  text-align: left;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.annotation-main span {
   font-weight: 800;
 }
 
-.annotation-row small {
+.annotation-main small {
   color: rgba(31, 46, 41, 0.68);
   line-height: 1.45;
 }

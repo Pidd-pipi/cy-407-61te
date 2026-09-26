@@ -8,8 +8,9 @@
 - 展品详情：独立 360° 模型查看器，右侧信息面板展示作者、工艺、材质、尺寸和标注。
 - 展览管理：创建、编辑、删除展览，调整展品顺序，设置主题色并发布。
 - 导览编辑：时间轴式节点编辑，配置展品、相机位置、目标点、过渡时长和讲解文字。
-- 展品库：网格/列表视图切换，维护展品资料，上传本地图片和 GLB/GLTF 模型。
-- 本地持久化：IndexedDB 保存四类业务实体，File API + Blob 保存图片和 3D 模型文件。
+- 展品库：网格/列表视图切换，维护展品资料，上传本地图片和 GLB/GLTF 模型，卡片与页头展示待处理问题数量。
+- 讲解反馈：参观者对每条讲解确认"有用"或提交"内容有误"问题，同一设备对同一讲解仅保留最新一条；策展人在展品详情逐条回复并标记已处理，答复对参观者可见；展品删除时相关反馈同步清理。
+- 本地持久化：IndexedDB 保存五类业务实体，File API + Blob 保存图片和 3D 模型文件。
 - Three.js 生命周期：统一 renderer 管理、动画循环和组件卸载资源释放。
 
 ## 快速启动
@@ -41,11 +42,12 @@ npm run preview
 ```text
 frontend/src/
 ├── api/           # storage.ts：IndexedDB 数据层仓库
-├── stores/        # artifact.ts, exhibition.ts, annotation.ts, tour.ts
-├── types/         # artifact.ts, exhibition.ts, annotation.ts, tour.ts, enums.ts
+├── stores/        # artifact.ts, exhibition.ts, annotation.ts, tour.ts, feedback.ts
+├── types/         # artifact.ts, exhibition.ts, annotation.ts, tour.ts, feedback.ts, enums.ts
 ├── components/
 │   ├── common/    # SceneCanvas, ArtifactCard, InfoPanel, FileUploader, ExhibitionCard
 │   ├── viewer/    # ModelViewer, AnnotationRenderer, CameraControls, ArtifactPanel
+│   ├── feedback/  # AnnotationFeedback（参观者反馈）、PendingFeedbackList（策展人处理）
 │   └── editor/    # ArtifactPicker, TourTimeline, CameraSetter
 ├── hooks/         # useThreeScene, useIndexedDB, useAnimationLoop
 ├── pages/         # Gallery, ArtifactDetail, ExhibitionManage, TourEditor, ArtifactManage
